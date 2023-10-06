@@ -9,14 +9,18 @@ import (
 
 type handler struct {
 	validator *validator.Validate
-	userRepo  userRepository
+	repo      repo
 }
 
-func New(userRepo userRepository) *handler {
+func New(repo repo) *handler {
 	return &handler{
 		validator: validator.New(),
-		userRepo:  userRepo,
+		repo:      repo,
 	}
+}
+
+type repo interface {
+	userRepository
 }
 
 type userRepository interface {

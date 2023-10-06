@@ -10,9 +10,9 @@ import (
 
 func main() {
 	dbDsn := os.Getenv("DATABASE_URL")
-	userRepo := repository.New(dbDsn)
+	repo := repository.New(dbDsn)
 
-	handler := delivery.New(userRepo)
+	handler := delivery.New(repo)
 
 	r := gin.Default()
 	r.POST("/users", handler.CreateUser)

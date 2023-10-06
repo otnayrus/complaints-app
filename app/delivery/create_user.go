@@ -28,7 +28,7 @@ func (h *handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	id, err := h.userRepo.CreateUser(ctx, req.MakeModel())
+	id, err := h.repo.CreateUser(ctx, req.MakeModel())
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return

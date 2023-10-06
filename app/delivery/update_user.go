@@ -29,13 +29,13 @@ func (h *handler) UpdateUser(c *gin.Context) {
 	}
 
 	// TODO: need to pair with auth
-	existing, err := h.userRepo.GetUserByID(ctx, 0)
+	existing, err := h.repo.GetUserByID(ctx, 0)
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return
 	}
 
-	id, err := h.userRepo.CreateUser(ctx, req.MakeModel(*existing))
+	id, err := h.repo.CreateUser(ctx, req.MakeModel(*existing))
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return

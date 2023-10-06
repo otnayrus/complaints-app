@@ -23,7 +23,7 @@ func (h *handler) DeleteUser(c *gin.Context) {
 	}
 
 	// TODO: need to pair with auth
-	err = h.userRepo.DeleteUser(ctx, 0)
+	err = h.repo.DeleteUser(ctx, 0)
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return
