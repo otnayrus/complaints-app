@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS 'roles' (
     'updated_at' DATETIME
 );
 
+INSERT INTO 'roles' ('id', 'name') VALUES (1, 'admin');
+INSERT INTO 'roles' ('id', 'name') VALUES (2, 'user');
+
 CREATE TABLE IF NOT EXISTS 'users_roles' (
     'id' INTEGER PRIMARY KEY AUTOINCREMENT,
     'user_id' INTEGER NOT NULL,
@@ -37,6 +40,8 @@ CREATE TABLE IF NOT EXISTS 'categories' (
     'updated_at' DATETIME
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS 'idx_categories_name' ON 'categories' ('name');
+
 CREATE TABLE IF NOT EXISTS 'complaints' (
     'id' INTEGER PRIMARY KEY AUTOINCREMENT,
     'category_id' INTEGER NOT NULL,
@@ -48,7 +53,7 @@ CREATE TABLE IF NOT EXISTS 'complaints' (
     'created_at' DATETIME DEFAULT CURRENT_TIMESTAMP
     'updated_at' DATETIME
 
-    FOREIGN KEY('category_id') REFERENCES 'categories'('id'),
+    FOREIGN KEY('category_id') REFERENCES 'categories'('id') ON DELETE RESTRICT,
     FOREIGN KEY('created_by') REFERENCES 'users'('id')
 );
 
