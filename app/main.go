@@ -19,5 +19,17 @@ func main() {
 	r.PATCH("/users", handler.UpdateUser)
 	r.DELETE("/users", handler.DeleteUser)
 
-	r.Run("127.0.0.1:8001")
+	r.POST("/categories", handler.CreateCategory)
+	r.GET("/categories", handler.GetCategories)
+	r.GET("/categories/:id", handler.GetCategoryByID)
+	r.PATCH("/categories", handler.UpdateCategory)
+	r.DELETE("/categories", handler.DeleteCategory)
+
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Hello world!",
+		})
+	})
+
+	r.Run(":8001")
 }

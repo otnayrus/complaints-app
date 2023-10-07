@@ -64,6 +64,9 @@ func IsErrorContainingCode(err error, code int) bool {
 	if err == nil {
 		return false
 	}
-	ew := err.(*errorWrapper)
+	ew, ok := err.(*errorWrapper)
+	if !ok {
+		return false
+	}
 	return ew.Code == code
 }

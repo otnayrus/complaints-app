@@ -44,5 +44,53 @@ func (r *UpdateUserRequest) Validate(v *validator.Validate) error {
 }
 
 type DeleteUserRequest struct {
-	ID int64 `json:"id" validate:"required"`
+	ID int `json:"id" validate:"required"`
 }
+
+// Category
+
+type CreateCategoryRequest struct {
+	Name              string  `json:"name" validate:"required"`
+	ExtraFieldsSchema []Field `json:"extra_fields_schema" validate:"required"`
+}
+
+func (r *CreateCategoryRequest) MakeModel() *Category {
+	return &Category{
+		Name:              r.Name,
+		ExtraFieldsSchema: r.ExtraFieldsSchema,
+	}
+}
+
+func (r *CreateCategoryRequest) Validate(v *validator.Validate) error {
+	return v.Struct(r)
+}
+
+type UpdateCategoryRequest struct {
+	ID                int     `json:"id" validate:"required"`
+	Name              *string `json:"name" validate:"required"`
+	ExtraFieldsSchema []Field `json:"extra_fields_schema" validate:"required"`
+}
+
+func (r *UpdateCategoryRequest) MakeModel(existing Category) *Category {
+	if r.Name != nil {
+		existing.Name = *r.Name
+	}
+	if r.ExtraFieldsSchema != nil {
+		existing.ExtraFieldsSchema = r.ExtraFieldsSchema
+	}
+	return &existing
+}
+
+func (r *UpdateCategoryRequest) Validate(v *validator.Validate) error {
+	return v.Struct(r)
+}
+
+type DeleteCategoryRequest struct {
+	ID int `json:"id" validate:"required"`
+}
+
+type GetCategoryByIDRequest struct {
+	ID int `json:"id"`
+}
+
+// Complaint

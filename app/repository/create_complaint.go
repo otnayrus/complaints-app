@@ -2,12 +2,18 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/otnayrus/sb-rest/app/model"
 )
 
 func (r *Repository) CreateComplaint(ctx context.Context, input *model.Complaint) error {
-	_, err := r.Db.ExecContext(
+	extraFieldsJson, err := json.Marshal(input.ExtraFields)
+	if err != nil {
+		return err
+	}
+
+	_, err = r.Db.ExecContext(
 		ctx,
 		createComplaintQuery,
 		input.UserID,
@@ -15,7 +21,7 @@ func (r *Repository) CreateComplaint(ctx context.Context, input *model.Complaint
 		input.Description,
 		input.Status,
 		input.Remarks,
-		input.ExtraFields,
+		extraFieldsJson,
 	)
 	if err != nil {
 		return err

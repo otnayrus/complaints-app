@@ -3,9 +3,9 @@ services:
   app:
     build: .
     ports:
-      - "8001:8001"
+      - "8000:8001"
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:6432/database?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgres@db:5432/database?sslmode=disable
     depends_on:
       db:
         condition: service_healthy
@@ -13,9 +13,9 @@ services:
     container_name: db
     image: postgres:alpine
     environment:
-      POSTGRES_USER: local
-      POSTGRES_DB: local
-      POSTGRES_PASSWORD: local
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: database
     ports:
       - 6432:5432
     expose:

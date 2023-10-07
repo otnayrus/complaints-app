@@ -8,30 +8,27 @@ import (
 	"github.com/otnayrus/sb-rest/app/pkg/errorwrapper"
 )
 
-func (h *handler) DeleteUser(c *gin.Context) {
+func (h *handler) GetCategoryByID(c *gin.Context) {
 	var (
-		req model.DeleteUserRequest
 		err error
+		req model.GetCategoryByIDRequest
 
 		ctx = c.Request.Context()
 	)
 
-	err = c.BindJSON(&req)
+	err = c.BindUri(&req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// TODO: need to pair with auth
-	err = h.repo.DeleteUser(ctx, 0)
+	category, err := h.repo.GetCategoryByID(ctx, req.ID)
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"id":      0,
-		"message": "User deleted successfully",
+	c.JSON(http.StatusOK, model.GetCategoryByIDResponse{
+		Category: *category,
 	})
-
 }

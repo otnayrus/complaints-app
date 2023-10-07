@@ -1,14 +1,14 @@
 package model
 
-type Field string
+type FieldType string
 
 const (
-	FieldSingleFileImage   Field = "single_file_image"
-	FieldMultipleFileImage Field = "multiple_file_image"
-	FieldDropdownSelection Field = "dropdown_selection"
-	FieldText              Field = "text"
-	FieldTextArea          Field = "text_area"
-	FieldNumber            Field = "number"
+	FieldTypeSingleFileImage   FieldType = "single_file_image"
+	FieldTypeMultipleFileImage FieldType = "multiple_file_image"
+	FieldTypeDropdownSelection FieldType = "dropdown_selection"
+	FieldTypeText              FieldType = "text"
+	FieldTypeTextArea          FieldType = "text_area"
+	FieldTypeNumber            FieldType = "number"
 )
 
 type Role string

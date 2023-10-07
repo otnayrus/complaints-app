@@ -10,13 +10,13 @@ const (
 )
 
 const (
-	createCategoryQuery = `INSERT INTO categories (name, extra_fields) VALUES (LOWER($1), $2) RETURNING id`
-	updateCategoryQuery = `UPDATE categories SET name = LOWER($1), extra_fields = $2, updated_at = NOW() WHERE id = $3`
+	createCategoryQuery = `INSERT INTO categories (name, extra_fields_schema) VALUES (LOWER($1), $2) RETURNING id`
+	updateCategoryQuery = `UPDATE categories SET name = LOWER($1), extra_fields_schema = $2, updated_at = NOW() WHERE id = $3`
 	deleteCategoryQuery = `DELETE FROM categories WHERE id = $1`
 
-	getAllCategoriesQuery  = `SELECT id, name, extra_fields FROM categories ORDER BY name`
-	getCategoryByIDQuery   = `SELECT id, name, extra_fields FROM categories WHERE id = $1`
-	getCategoryByNameQuery = `SELECT id, name, extra_fields FROM categories WHERE name = LOWER($1)`
+	getAllCategoriesQuery  = `SELECT id, name, extra_fields_schema FROM categories ORDER BY name`
+	getCategoryByIDQuery   = `SELECT id, name, extra_fields_schema FROM categories WHERE id = $1`
+	getCategoryByNameQuery = `SELECT id, name, extra_fields_schema FROM categories WHERE name = LOWER($1)`
 )
 
 const (
