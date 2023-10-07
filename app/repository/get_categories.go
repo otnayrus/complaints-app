@@ -1,9 +1,13 @@
 package repository
 
-import "github.com/otnayrus/sb-rest/app/model"
+import (
+	"context"
 
-func (r *Repository) GetCategories() ([]model.Category, error) {
-	rows, err := r.Db.Query(getAllCategoriesQuery)
+	"github.com/otnayrus/sb-rest/app/model"
+)
+
+func (r *Repository) GetCategories(ctx context.Context) ([]model.Category, error) {
+	rows, err := r.Db.QueryContext(ctx, getAllCategoriesQuery)
 	if err != nil {
 		return nil, err
 	}

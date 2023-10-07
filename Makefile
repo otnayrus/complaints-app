@@ -1,9 +1,16 @@
 docker-up:
 	@docker-compose up --build -d
 
-run-rest:
+docker-down:
+	@docker-compose down
+
+run-server:
 	@make -s docker-up
 	@go run -race -v app/main.go
 
 run-client:
-	@npm start
+	@yarn start
+
+install:
+	@go mod vendor
+	@yarn install
