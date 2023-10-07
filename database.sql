@@ -57,3 +57,5 @@ CREATE TABLE IF NOT EXISTS "public"."complaints" (
     FOREIGN KEY("created_by") REFERENCES "users"("id")
 );
 
+CREATE INDEX IF NOT EXISTS "idx_complaints_category_id" ON "complaints" ("category_id");
+CREATE INDEX IF NOT EXISTS "idx_complaints_status" ON "complaints" ("status");

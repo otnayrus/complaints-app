@@ -21,7 +21,7 @@ func (r *Repository) GetCategoryByID(ctx context.Context, id int) (*model.Catego
 		if err == sql.ErrNoRows {
 			return nil, errorwrapper.WrapErr(errorwrapper.ErrResourceNotFound, "category not found")
 		}
-		return nil, err
+		return nil, errorwrapper.WrapErr(errorwrapper.ErrInternalServer, err.Error())
 	}
 
 	err = json.Unmarshal([]byte(extraFieldsSchema), &category.ExtraFieldsSchema)

@@ -35,5 +35,8 @@ func (h *handler) CreateCategory(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"id": id})
+	c.JSON(http.StatusOK, gin.H{
+		"id":      id,
+		"message": "Category created successfully",
+	})
 }

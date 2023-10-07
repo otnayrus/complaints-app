@@ -2,31 +2,44 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 
 	"github.com/otnayrus/sb-rest/app/model"
+	"github.com/otnayrus/sb-rest/app/pkg/errorwrapper"
 )
 
 func (r *Repository) GetComplaints(ctx context.Context) ([]model.Complaint, error) {
 	rows, err := r.Db.QueryContext(ctx, getAllComplaintsQuery)
 	if err != nil {
-		return nil, err
+		if err == sql.ErrNoRows {
+			return nil, errorwrapper.WrapErr(errorwrapper.ErrResourceNotFound, err.Error())
+		}
+		return nil, errorwrapper.WrapErr(errorwrapper.ErrInternalServer, err.Error())
 	}
 	defer rows.Close()
 
 	var complaints []model.Complaint
 	for rows.Next() {
-		var complaint model.Complaint
+		var (
+			complaint   model.Complaint
+			extraFields string
+		)
 		err := rows.Scan(
 			&complaint.ID,
-			&complaint.UserID,
 			&complaint.CategoryID,
 			&complaint.Description,
 			&complaint.Status,
 			&complaint.Remarks,
-			&complaint.ExtraFields,
+			&extraFields,
+			&complaint.CreatedBy,
 		)
 		if err != nil {
 			return nil, err
+		}
+		err = json.Unmarshal([]byte(extraFields), &complaint.ExtraFields)
+		if err != nil {
+			return nil, errorwrapper.WrapErr(errorwrapper.ErrInternalServer, err.Error())
 		}
 		complaints = append(complaints, complaint)
 	}

@@ -20,10 +20,10 @@ const (
 )
 
 const (
-	createComplaintQuery = `INSERT INTO complaints (user_id, category_id, description, status, remarks, extra_fields) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
-	updateComplaintQuery = `UPDATE complaints SET user_id = $1, category_id = $2, description = $3, status = $4, remarks = $5, extra_fields = $6, updated_at = NOW() WHERE id = $7`
+	createComplaintQuery = `INSERT INTO complaints (category_id, description, status, remarks, extra_fields, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
+	updateComplaintQuery = `UPDATE complaints SET created_by = $1, category_id = $2, description = $3, status = $4, remarks = $5, extra_fields = $6, updated_at = NOW() WHERE id = $7`
 	deleteComplaintQuery = `DELETE FROM complaints WHERE id = $1`
 
-	getAllComplaintsQuery = `SELECT id, user_id, category_id, description, status, remarks, extra_fields FROM complaints ORDER BY id`
-	getComplaintByIDQuery = `SELECT id, user_id, category_id, description, status, remarks, extra_fields FROM complaints WHERE id = $1`
+	getComplaintByIDQuery = `SELECT id, category_id, description, status, remarks, extra_fields, created_by FROM complaints WHERE id = $1`
+	getAllComplaintsQuery = `SELECT id, category_id, description, status, remarks, extra_fields, created_by FROM complaints`
 )

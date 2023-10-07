@@ -3,6 +3,7 @@ package errorwrapper
 import (
 	"log"
 	"net/http"
+	"runtime"
 )
 
 const (
@@ -28,8 +29,9 @@ type ErrorWrapper interface {
 }
 
 type errorWrapper struct {
-	Code    int
-	Message string
+	Code       int
+	Message    string
+	DevMessage string
 }
 
 func (e *errorWrapper) Error() string {
@@ -37,9 +39,27 @@ func (e *errorWrapper) Error() string {
 }
 
 func WrapErr(code int, message string) error {
+	// Get the name of the calling function.
+	pc, _, _, ok := runtime.Caller(1)
+	if !ok {
+		// Handle error.
+		return &errorWrapper{
+			Code:       code,
+			Message:    message,
+			DevMessage: "[Unhandled]",
+		}
+	}
+
+	// Get the function object.
+	fn := runtime.FuncForPC(pc)
+
+	// Get the function name.
+	name := fn.Name()
+
 	return &errorWrapper{
-		Code:    code,
-		Message: message,
+		Code:       code,
+		Message:    message,
+		DevMessage: name,
 	}
 }
 
@@ -54,7 +74,7 @@ func ConvertToHTTPError(err error) (code int, response map[string]any) {
 
 	// log internal server errors
 	if ew.Code == ErrInternalServer {
-		log.Println(ew.Message)
+		log.Println(ew.DevMessage+" -> ", ew.Message)
 	}
 
 	return httpCodeMap[ew.Code], map[string]any{"error": ew.Message}

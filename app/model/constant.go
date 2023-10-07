@@ -17,3 +17,8 @@ const (
 	RoleAdmin Role = "admin"
 	RoleUser  Role = "user"
 )
+
+const (
+	ComplaintStatusPending int = iota + 1
+	ComplaintStatusResolved
+)

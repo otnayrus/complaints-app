@@ -22,6 +22,7 @@ func New(repo repo) *handler {
 type repo interface {
 	userRepository
 	categoryRepository
+	complaintRepository
 }
 
 type userRepository interface {
@@ -38,4 +39,11 @@ type categoryRepository interface {
 	GetCategoryByID(ctx context.Context, id int) (*model.Category, error)
 	UpdateCategory(ctx context.Context, category *model.Category) error
 	DeleteCategory(ctx context.Context, id int) error
+}
+
+type complaintRepository interface {
+	CreateComplaint(ctx context.Context, complaint *model.Complaint) (int, error)
+	GetComplaints(ctx context.Context) ([]model.Complaint, error)
+	GetComplaintByID(ctx context.Context, id int) (*model.Complaint, error)
+	UpdateComplaint(ctx context.Context, complaint *model.Complaint) error
 }

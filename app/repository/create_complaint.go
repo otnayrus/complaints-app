@@ -5,27 +5,27 @@ import (
 	"encoding/json"
 
 	"github.com/otnayrus/sb-rest/app/model"
+	"github.com/otnayrus/sb-rest/app/pkg/errorwrapper"
 )
 
-func (r *Repository) CreateComplaint(ctx context.Context, input *model.Complaint) error {
+func (r *Repository) CreateComplaint(ctx context.Context, input *model.Complaint) (int, error) {
 	extraFieldsJson, err := json.Marshal(input.ExtraFields)
 	if err != nil {
-		return err
+		return 0, errorwrapper.WrapErr(errorwrapper.ErrInternalServer, err.Error())
 	}
 
-	_, err = r.Db.ExecContext(
-		ctx,
-		createComplaintQuery,
-		input.UserID,
+	var id int
+	err = r.Db.QueryRowContext(ctx, createComplaintQuery,
 		input.CategoryID,
 		input.Description,
 		input.Status,
 		input.Remarks,
 		extraFieldsJson,
-	)
+		input.CreatedBy,
+	).Scan(&id)
 	if err != nil {
-		return err
+		return 0, errorwrapper.WrapErr(errorwrapper.ErrInternalServer, err.Error())
 	}
 
-	return nil
+	return id, nil
 }

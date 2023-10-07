@@ -1,6 +1,8 @@
 package model
 
-import "github.com/go-playground/validator/v10"
+import (
+	"github.com/go-playground/validator/v10"
+)
 
 type CreateUserRequest struct {
 	Name     string `json:"name" validate:"required"`
@@ -47,7 +49,7 @@ type DeleteUserRequest struct {
 	ID int `json:"id" validate:"required"`
 }
 
-// Category
+// Category ==========================================================================================================
 
 type CreateCategoryRequest struct {
 	Name              string  `json:"name" validate:"required"`
@@ -90,7 +92,63 @@ type DeleteCategoryRequest struct {
 }
 
 type GetCategoryByIDRequest struct {
-	ID int `json:"id"`
+	ID int `uri:"id"`
 }
 
-// Complaint
+// Complaint ==============================================
+
+type CreateComplaintRequest struct {
+	CategoryID  int     `json:"category_id" validate:"required"`
+	Description string  `json:"description" validate:"required"`
+	ExtraFields []Field `json:"extra_fields" validate:"required"`
+}
+
+func (r *CreateComplaintRequest) MakeModel(userID int) *Complaint {
+	return &Complaint{
+		CategoryID:  r.CategoryID,
+		Description: r.Description,
+		ExtraFields: r.ExtraFields,
+		Status:      ComplaintStatusPending,
+		CreatedBy:   userID,
+	}
+}
+
+func (r *CreateComplaintRequest) Validate(v *validator.Validate) error {
+	return v.Struct(r)
+}
+
+type UpdateComplaintRequest struct {
+	ID          int     `json:"id" validate:"required"`
+	CategoryID  *int    `json:"category_id"`
+	Description *string `json:"description"`
+	ExtraFields []Field `json:"extra_fields"`
+	Status      *int    `json:"status"`
+	Remarks     *string `json:"remarks"`
+}
+
+func (r *UpdateComplaintRequest) MakeModel(existing Complaint, userID int) *Complaint {
+	if r.CategoryID != nil {
+		existing.CategoryID = *r.CategoryID
+	}
+	if r.Description != nil {
+		existing.Description = *r.Description
+	}
+	if r.ExtraFields != nil {
+		existing.ExtraFields = r.ExtraFields
+	}
+	if r.Status != nil {
+		existing.Status = *r.Status
+	}
+	if r.Remarks != nil {
+		existing.Remarks = *r.Remarks
+	}
+	return &existing
+}
+
+func (r *UpdateComplaintRequest) Validate(v *validator.Validate) error {
+	return v.Struct(r)
+}
+
+type GetComplaintByIDRequest struct {
+	ID int `uri:"id"`
+}

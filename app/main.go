@@ -25,6 +25,11 @@ func main() {
 	r.PATCH("/categories", handler.UpdateCategory)
 	r.DELETE("/categories", handler.DeleteCategory)
 
+	r.POST("/complaints", handler.CreateComplaint)
+	r.GET("/complaints", handler.GetComplaints)
+	r.GET("/complaints/:id", handler.GetComplaintByID)
+	r.PATCH("/complaints", handler.UpdateComplaint)
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Hello world!",

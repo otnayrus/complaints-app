@@ -8,10 +8,11 @@ import (
 	"github.com/otnayrus/sb-rest/app/pkg/errorwrapper"
 )
 
-func (h *handler) CreateUser(c *gin.Context) {
+func (h *handler) UpdateComplaint(c *gin.Context) {
 	var (
-		req model.CreateUserRequest
-		err error
+		err    error
+		req    model.UpdateComplaintRequest
+		userID int
 
 		ctx = c.Request.Context()
 	)
@@ -28,14 +29,20 @@ func (h *handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	id, err := h.repo.CreateUser(ctx, req.MakeModel())
+	existing, err := h.repo.GetComplaintByID(ctx, req.ID)
+	if err != nil {
+		c.JSON(errorwrapper.ConvertToHTTPError(err))
+		return
+	}
+
+	err = h.repo.UpdateComplaint(ctx, req.MakeModel(*existing, userID))
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"id":      id,
-		"message": "User created successfully",
+		"id":      req.ID,
+		"message": "Complaint updated successfully",
 	})
 }

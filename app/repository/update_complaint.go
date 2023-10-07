@@ -10,7 +10,7 @@ func (r *Repository) UpdateComplaint(ctx context.Context, input *model.Complaint
 	_, err := r.Db.ExecContext(
 		ctx,
 		updateComplaintQuery,
-		input.UserID,
+		input.CreatedBy,
 		input.CategoryID,
 		input.Description,
 		input.Status,
