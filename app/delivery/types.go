@@ -31,6 +31,8 @@ type userRepository interface {
 	GetUserByID(ctx context.Context, id int) (*model.User, error)
 	UpdateUser(ctx context.Context, user *model.User) error
 	DeleteUser(ctx context.Context, id int) error
+	IsUserHaveRole(ctx context.Context, userID int, role string) (bool, error)
+	GetUserRoles(ctx context.Context, userID int) (map[string]bool, error)
 }
 
 type categoryRepository interface {

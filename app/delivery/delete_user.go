@@ -22,8 +22,13 @@ func (h *handler) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	// TODO: need to pair with auth
-	err = h.repo.DeleteUser(ctx, 0)
+	userID := c.GetInt("user_id")
+	if userID != req.ID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You can't delete other users"})
+		return
+	}
+
+	err = h.repo.DeleteUser(ctx, userID)
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return

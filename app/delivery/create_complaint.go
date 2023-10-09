@@ -10,9 +10,8 @@ import (
 
 func (h *handler) CreateComplaint(c *gin.Context) {
 	var (
-		err    error
-		req    model.CreateComplaintRequest
-		userID int
+		err error
+		req model.CreateComplaintRequest
 
 		ctx = c.Request.Context()
 	)
@@ -29,7 +28,8 @@ func (h *handler) CreateComplaint(c *gin.Context) {
 		return
 	}
 
-	userID = 1
+	userID := c.GetInt("user_id")
+
 	id, err := h.repo.CreateComplaint(ctx, req.MakeModel(userID))
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))

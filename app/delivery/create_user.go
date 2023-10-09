@@ -28,7 +28,13 @@ func (h *handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	id, err := h.repo.CreateUser(ctx, req.MakeModel())
+	model, err := req.MakeModel()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	id, err := h.repo.CreateUser(ctx, model)
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return

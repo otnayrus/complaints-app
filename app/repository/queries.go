@@ -10,6 +10,22 @@ const (
 )
 
 const (
+	createUserRoleQuery = `INSERT INTO users_roles (user_id, role_id) VALUES ($1, $2)`
+
+	getRoleIdByNameQuery = `SELECT id FROM roles WHERE name = $1`
+	getUserRoleQuery     = `SELECT EXISTS (
+		SELECT 1
+		FROM users_roles
+		WHERE user_id = $1 AND role_id = $2
+	)`
+	getUserRolesQuery = `SELECT r.name
+		FROM users_roles ur
+		INNER JOIN roles r ON r.id = ur.role_id
+		WHERE ur.user_id = $1	
+	`
+)
+
+const (
 	createCategoryQuery = `INSERT INTO categories (name, extra_fields_schema) VALUES (LOWER($1), $2) RETURNING id`
 	updateCategoryQuery = `UPDATE categories SET name = LOWER($1), extra_fields_schema = $2, updated_at = NOW() WHERE id = $3`
 	deleteCategoryQuery = `DELETE FROM categories WHERE id = $1`

@@ -15,20 +15,21 @@ func main() {
 	handler := delivery.New(repo)
 
 	r := gin.Default()
+	r.POST("/users/login", handler.Login)
 	r.POST("/users", handler.CreateUser)
-	r.PATCH("/users", handler.UpdateUser)
-	r.DELETE("/users", handler.DeleteUser)
+	r.PATCH("/users", handler.IsAuthorizedUser(), handler.UpdateUser)
+	r.DELETE("/users", handler.IsAuthorizedUser(), handler.DeleteUser)
 
-	r.POST("/categories", handler.CreateCategory)
+	r.POST("/categories", handler.IsAuthorizedUser(), handler.IsAuthorizedAdmin(), handler.CreateCategory)
 	r.GET("/categories", handler.GetCategories)
 	r.GET("/categories/:id", handler.GetCategoryByID)
-	r.PATCH("/categories", handler.UpdateCategory)
-	r.DELETE("/categories", handler.DeleteCategory)
+	r.PATCH("/categories", handler.IsAuthorizedUser(), handler.IsAuthorizedAdmin(), handler.UpdateCategory)
+	r.DELETE("/categories", handler.IsAuthorizedUser(), handler.IsAuthorizedAdmin(), handler.DeleteCategory)
 
-	r.POST("/complaints", handler.CreateComplaint)
+	r.POST("/complaints", handler.IsAuthorizedUser(), handler.CreateComplaint)
 	r.GET("/complaints", handler.GetComplaints)
 	r.GET("/complaints/:id", handler.GetComplaintByID)
-	r.PATCH("/complaints", handler.UpdateComplaint)
+	r.PATCH("/complaints", handler.IsAuthorizedUser(), handler.UpdateComplaint)
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

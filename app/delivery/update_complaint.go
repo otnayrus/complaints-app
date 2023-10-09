@@ -10,9 +10,8 @@ import (
 
 func (h *handler) UpdateComplaint(c *gin.Context) {
 	var (
-		err    error
-		req    model.UpdateComplaintRequest
-		userID int
+		err error
+		req model.UpdateComplaintRequest
 
 		ctx = c.Request.Context()
 	)
@@ -35,7 +34,25 @@ func (h *handler) UpdateComplaint(c *gin.Context) {
 		return
 	}
 
-	err = h.repo.UpdateComplaint(ctx, req.MakeModel(*existing, userID))
+	userID := c.GetInt("user_id")
+	rolesRaw, exists := c.Get("roles")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "roles not found"})
+		return
+	}
+	rolesMap, ok := rolesRaw.(map[string]bool)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "roles conversion failed"})
+		return
+	}
+
+	complaint, err := req.MakeModel(*existing, userID, rolesMap[string(model.RoleAdmin)])
+	if err != nil {
+		c.JSON(errorwrapper.ConvertToHTTPError(err))
+		return
+	}
+
+	err = h.repo.UpdateComplaint(ctx, complaint)
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return

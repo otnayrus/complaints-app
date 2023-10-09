@@ -6,11 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/otnayrus/sb-rest/app/model"
 	"github.com/otnayrus/sb-rest/app/pkg/errorwrapper"
+	"github.com/otnayrus/sb-rest/app/pkg/jwt"
+	"github.com/otnayrus/sb-rest/app/pkg/secret"
 )
 
-func (h *handler) UpdateUser(c *gin.Context) {
+func (h *handler) Login(c *gin.Context) {
 	var (
-		req model.UpdateUserRequest
+		req model.LoginRequest
 		err error
 
 		ctx = c.Request.Context()
@@ -28,24 +30,28 @@ func (h *handler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetInt("user_id")
-	if userID != req.ID {
-		c.JSON(http.StatusForbidden, gin.H{"error": "You can't update other users"})
-		return
-	}
-
-	existing, err := h.repo.GetUserByID(ctx, userID)
+	user, err := h.repo.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return
 	}
 
-	id, err := h.repo.CreateUser(ctx, req.MakeModel(*existing))
+	err = secret.MatchPassword(req.Password, user.Password)
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"id": id})
+	token, err := jwt.GenerateJWTStringWithClaims(map[string]interface{}{
+		"user_id": user.ID,
+	})
+	if err != nil {
+		c.JSON(errorwrapper.ConvertToHTTPError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
 
 }

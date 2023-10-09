@@ -2,6 +2,8 @@ package model
 
 import (
 	"github.com/go-playground/validator/v10"
+	"github.com/otnayrus/sb-rest/app/pkg/errorwrapper"
+	"github.com/otnayrus/sb-rest/app/pkg/secret"
 )
 
 type CreateUserRequest struct {
@@ -10,12 +12,16 @@ type CreateUserRequest struct {
 	Password string `json:"password" validate:"required,min=8"`
 }
 
-func (r *CreateUserRequest) MakeModel() *User {
+func (r *CreateUserRequest) MakeModel() (*User, error) {
+	hash, err := secret.GeneratePassword(r.Password)
+	if err != nil {
+		return nil, errorwrapper.WrapErr(errorwrapper.ErrInternalServer, err.Error())
+	}
 	return &User{
 		Name:     r.Name,
 		Email:    r.Email,
-		Password: r.Password,
-	}
+		Password: hash,
+	}, nil
 }
 
 func (r *CreateUserRequest) Validate(v *validator.Validate) error {
@@ -23,6 +29,7 @@ func (r *CreateUserRequest) Validate(v *validator.Validate) error {
 }
 
 type UpdateUserRequest struct {
+	ID       int     `json:"id" validate:"required"`
 	Name     *string `json:"name"`
 	Email    *string `json:"email"`
 	Password *string `json:"password"`
@@ -47,6 +54,15 @@ func (r *UpdateUserRequest) Validate(v *validator.Validate) error {
 
 type DeleteUserRequest struct {
 	ID int `json:"id" validate:"required"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8"`
+}
+
+func (r *LoginRequest) Validate(v *validator.Validate) error {
+	return v.Struct(r)
 }
 
 // Category ==========================================================================================================
@@ -126,7 +142,7 @@ type UpdateComplaintRequest struct {
 	Remarks     *string `json:"remarks"`
 }
 
-func (r *UpdateComplaintRequest) MakeModel(existing Complaint, userID int) *Complaint {
+func (r *UpdateComplaintRequest) MakeModel(existing Complaint, userID int, isAdmin bool) (*Complaint, error) {
 	if r.CategoryID != nil {
 		existing.CategoryID = *r.CategoryID
 	}
@@ -137,12 +153,18 @@ func (r *UpdateComplaintRequest) MakeModel(existing Complaint, userID int) *Comp
 		existing.ExtraFields = r.ExtraFields
 	}
 	if r.Status != nil {
+		if !isAdmin {
+			return nil, errorwrapper.WrapErr(errorwrapper.ErrForbidden, "only admin can update status")
+		}
 		existing.Status = *r.Status
 	}
 	if r.Remarks != nil {
+		if !isAdmin {
+			return nil, errorwrapper.WrapErr(errorwrapper.ErrForbidden, "only admin can update remarks")
+		}
 		existing.Remarks = *r.Remarks
 	}
-	return &existing
+	return &existing, nil
 }
 
 func (r *UpdateComplaintRequest) Validate(v *validator.Validate) error {
