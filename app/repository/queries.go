@@ -40,6 +40,7 @@ const (
 	updateComplaintQuery = `UPDATE complaints SET created_by = $1, category_id = $2, description = $3, status = $4, remarks = $5, extra_fields = $6, updated_at = NOW() WHERE id = $7`
 	deleteComplaintQuery = `DELETE FROM complaints WHERE id = $1`
 
-	getComplaintByIDQuery = `SELECT id, category_id, description, status, remarks, extra_fields, created_by FROM complaints WHERE id = $1`
-	getAllComplaintsQuery = `SELECT id, category_id, description, status, remarks, extra_fields, created_by FROM complaints`
+	getComplaintByIDQuery      = `SELECT id, category_id, description, status, remarks, extra_fields, created_by FROM complaints WHERE id = $1`
+	getAllComplaintsQuery      = `SELECT id, category_id, description, status, remarks, extra_fields, created_by FROM complaints`
+	getComplaintsByUserIDQuery = `SELECT id, category_id, description, status, remarks, extra_fields, created_by FROM complaints WHERE created_by = $1`
 )

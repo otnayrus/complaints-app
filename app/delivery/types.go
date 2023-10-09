@@ -48,4 +48,5 @@ type complaintRepository interface {
 	GetComplaints(ctx context.Context) ([]model.Complaint, error)
 	GetComplaintByID(ctx context.Context, id int) (*model.Complaint, error)
 	UpdateComplaint(ctx context.Context, complaint *model.Complaint) error
+	GetComplaintsByUser(ctx context.Context, userID int) ([]model.Complaint, error)
 }

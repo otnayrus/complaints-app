@@ -26,6 +26,7 @@ func main() {
 	r.POST("/users", handler.CreateUser)
 	r.PATCH("/users", handler.IsAuthorizedUser(), handler.UpdateUser)
 	r.DELETE("/users", handler.IsAuthorizedUser(), handler.DeleteUser)
+	r.GET("/users/complaints", handler.IsAuthorizedUser(), handler.GetComplaintsByUser)
 
 	r.POST("/categories", handler.IsAuthorizedUser(), handler.IsAuthorizedAdmin(), handler.CreateCategory)
 	r.GET("/categories", handler.GetCategories)

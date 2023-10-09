@@ -12,6 +12,8 @@ import UpdateCategoryPage from "./pages/UpdateCategoryPage";
 import ComplaintPage from "./pages/ComplaintPage";
 import ComplaintDetailPage from "./pages/ComplaintDetailPage";
 import CreateComplaintPage from "./pages/CreateComplaintPage";
+import CreateUserPage from "./pages/CreateUserPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/user/create",
+    element: <CreateUserPage />,
+  },
+  {
+    path: "/user/profile",
+    element: <ProfilePage />,
   },
   {
     path: "/category",
