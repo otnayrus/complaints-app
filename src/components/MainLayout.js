@@ -2,7 +2,6 @@ import {
   Grid,
   Container,
   Box,
-  Typography,
   ListItemButton,
   ListItemText,
   List,

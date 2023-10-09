@@ -42,8 +42,21 @@ func (h *handler) Login(c *gin.Context) {
 		return
 	}
 
+	roles, err := h.repo.GetUserRoles(ctx, user.ID)
+	if err != nil {
+		c.JSON(errorwrapper.ConvertToHTTPError(err))
+		return
+	}
+
+	var role string = string(model.RoleUser)
+	if roles[string(model.RoleAdmin)] {
+		role = string(model.RoleAdmin)
+	}
+
 	token, err := jwt.GenerateJWTStringWithClaims(map[string]interface{}{
 		"user_id": user.ID,
+		"name":    user.Name,
+		"role":    role,
 	})
 	if err != nil {
 		c.JSON(errorwrapper.ConvertToHTTPError(err))
