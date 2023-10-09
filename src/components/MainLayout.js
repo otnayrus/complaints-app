@@ -33,7 +33,7 @@ const MainLayout = ({ children }) => {
     <Container>
       <Box sx={{ my: 4 }}>
         <Grid container spacing={3}>
-          <Grid xs>
+          <Grid item xs>
             <Side>
               <nav>
                 <List>
@@ -81,7 +81,7 @@ const MainLayout = ({ children }) => {
               </nav>
             </Side>
           </Grid>
-          <Grid xs={9}>
+          <Grid item xs={9}>
             <Content>{children}</Content>
           </Grid>
         </Grid>

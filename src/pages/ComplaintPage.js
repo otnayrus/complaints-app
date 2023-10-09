@@ -1,4 +1,4 @@
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Chip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import MainLayout from "../components/MainLayout";
 import Table from "@mui/material/Table";
@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { StyledTableCell } from "../components/StyledTableCell";
 import { StyledTableRow } from "../components/StyledTableRow";
 
-const CategoryPage = () => {
+const ComplaintPage = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -23,7 +23,7 @@ const CategoryPage = () => {
 
     // Make an API call to fetch data with axios with token
     axios
-      .get("http://localhost:8000/categories", {
+      .get("http://localhost:8000/complaints", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -31,8 +31,8 @@ const CategoryPage = () => {
       .then((response) => {
         console.log(response);
         setIsLoading(false);
-        console.log(response.data.categories, "response.data.categories");
-        setData(response.data.categories);
+        console.log(response.data.complaints, "response.data.complaints");
+        setData(response.data.complaints);
       })
       .catch((error) => {
         console.log(error);
@@ -44,13 +44,13 @@ const CategoryPage = () => {
   return (
     <MainLayout>
       <Typography variant="h6" component="h6" gutterBottom>
-        Category Page
+        Complaint Page
       </Typography>
       <Button
         style={{ marginTop: "1rem", marginBottom: "1rem" }}
-        href={"/category/create"}
+        href={"/complaint/create"}
       >
-        Create new category
+        Create new complaint
       </Button>
 
       <TableContainer component={Paper}>
@@ -58,8 +58,8 @@ const CategoryPage = () => {
           <TableHead>
             <TableRow>
               <StyledTableCell>ID</StyledTableCell>
-              <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell>Extra Fields</StyledTableCell>
+              <StyledTableCell>Description</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
               <StyledTableCell>Action</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -80,22 +80,22 @@ const CategoryPage = () => {
                   <TableCell component="th" scope="row">
                     {row.id}
                   </TableCell>
-                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.description}</TableCell>
                   <TableCell>
-                    {row.extra_fields_schema.map((field) => (
-                      <div>
-                        {field.name} - {field.field_type}
-                      </div>
-                    ))}
+                    {row.status === 2 ? (
+                        <Chip label="resolved" color="success"/>
+                    ) : (
+                        <Chip label="pending" color="warning"/>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Button
                       component={Link}
-                      to={`/category/${row.id}/update`}
+                      to={`/complaint/${row.id}`}
                       variant="outlined"
                       color="primary"
                     >
-                      Update
+                      Take Action
                     </Button>
                   </TableCell>
                 </StyledTableRow>
@@ -108,4 +108,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default ComplaintPage;
