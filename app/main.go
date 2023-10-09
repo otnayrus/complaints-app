@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/otnayrus/sb-rest/app/delivery"
 	"github.com/otnayrus/sb-rest/app/repository"
@@ -15,6 +16,12 @@ func main() {
 	handler := delivery.New(repo)
 
 	r := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Authorization", "Content-Type"}
+	r.Use(cors.New(config))
+
 	r.POST("/users/login", handler.Login)
 	r.POST("/users", handler.CreateUser)
 	r.PATCH("/users", handler.IsAuthorizedUser(), handler.UpdateUser)
