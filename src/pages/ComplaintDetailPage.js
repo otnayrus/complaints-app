@@ -45,6 +45,33 @@ const ComplaintDetailPage = () => {
   const submitForm = (e) => {
     e.preventDefault();
     console.log(isResolved, remarks);
+    var status = 1;
+    if (isResolved) {
+      status = 2;
+    }
+
+    const jsonPayload = {
+      id: Number(id),
+      remarks: remarks,
+      status: status,
+    };
+
+    axios
+      .patch("http://localhost:8000/complaints", jsonPayload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        alert("Success update complaint");
+        window.location.href = "/complaint";
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Error: " + error);
+      });
   };
 
   return (
@@ -72,9 +99,7 @@ const ComplaintDetailPage = () => {
               <Grid item xs={3}>
                 {field.name}
               </Grid>
-              <Grid item xs={9}>
-                {field.value}
-              </Grid>
+              <RenderValue value={field.value} field_type={field.field_type} />
             </Grid>
           ))}
         </Grid>
@@ -116,3 +141,43 @@ const ComplaintDetailPage = () => {
 };
 
 export default ComplaintDetailPage;
+
+const RenderValue = ({ field_type, value }) => {
+  switch (field_type) {
+    case "single_file_image":
+    case "multiple_file_images":
+      const imageUrls = Array.isArray(value) ? value : [value]; // Ensure value is an array
+
+      return (
+        <Grid container spacing={2} paddingX={2} paddingY={1}>
+          {imageUrls.map((imageUrl, index) => (
+            <Grid item xs={3} key={index}>
+              <div
+                style={{
+                  width: "100%",
+                  overflow: "hidden",
+                }}
+              >
+                <img
+                  src={imageUrl}
+                  alt="Image Preview"
+                  style={{
+                    width: "100%",
+                    height: "10rem",
+                    objectFit: "cover", // Crop image to fit container
+                  }}
+                />
+              </div>
+            </Grid>
+          ))}
+        </Grid>
+      );
+
+    default:
+      return (
+        <Grid item xs={9}>
+          {value}
+        </Grid>
+      );
+  }
+};

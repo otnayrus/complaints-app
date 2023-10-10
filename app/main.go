@@ -38,7 +38,7 @@ func main() {
 	r.POST("/complaints", handler.IsAuthorizedUser(), handler.CreateComplaint)
 	r.GET("/complaints", handler.GetComplaints)
 	r.GET("/complaints/:id", handler.GetComplaintByID)
-	r.PATCH("/complaints", handler.IsAuthorizedUser(), handler.UpdateComplaint)
+	r.PATCH("/complaints", handler.IsAuthorizedUser(), handler.GetAuthorizedRole(), handler.UpdateComplaint)
 
 	r.POST("/images", handler.IsAuthorizedUser(), handler.SaveImage)
 
