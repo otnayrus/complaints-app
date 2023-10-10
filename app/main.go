@@ -21,6 +21,7 @@ func main() {
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	r.Use(cors.New(config))
+	r.Static("/images", "./uploads")
 
 	r.POST("/users/login", handler.Login)
 	r.POST("/users", handler.CreateUser)
@@ -38,6 +39,8 @@ func main() {
 	r.GET("/complaints", handler.GetComplaints)
 	r.GET("/complaints/:id", handler.GetComplaintByID)
 	r.PATCH("/complaints", handler.IsAuthorizedUser(), handler.UpdateComplaint)
+
+	r.POST("/images", handler.IsAuthorizedUser(), handler.SaveImage)
 
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

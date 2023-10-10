@@ -6,6 +6,8 @@ services:
       - "8000:8001"
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/database?sslmode=disable
+    volumes:
+      - uploads:/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -30,4 +32,6 @@ services:
       retries: 3
 volumes:
   db:
+    driver: local
+  uploads:
     driver: local
